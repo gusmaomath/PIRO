@@ -2,58 +2,58 @@
   "resultados": [
     {
       "modelo": "Random Forest",
-      "acuracia": 0.8317,
-      "precisao": 0.8421,
-      "recall": 0.7704,
-      "f1": 0.8046,
-      "auc": 0.9228,
+      "acuracia": 0.8921,
+      "precisao": 0.8216,
+      "recall": 0.8028,
+      "f1": 0.8121,
+      "auc": 0.9483,
       "matriz_confusao": [
         [
-          291,
-          39
+          989,
+          76
         ],
         [
-          62,
-          208
+          86,
+          350
         ]
       ]
     },
     {
       "modelo": "XGBoost",
-      "acuracia": 0.8467,
-      "precisao": 0.8321,
-      "recall": 0.8259,
-      "f1": 0.829,
-      "auc": 0.9201,
+      "acuracia": 0.8881,
+      "precisao": 0.8146,
+      "recall": 0.7959,
+      "f1": 0.8051,
+      "auc": 0.9471,
       "matriz_confusao": [
         [
-          285,
-          45
+          986,
+          79
         ],
         [
-          47,
-          223
+          89,
+          347
         ]
       ]
     },
     {
       "modelo": "Rede Neural (MLP)",
-      "acuracia": 0.7933,
-      "precisao": 0.7744,
-      "recall": 0.763,
-      "f1": 0.7687,
-      "auc": 0.8894,
+      "acuracia": 0.8847,
+      "precisao": 0.8312,
+      "recall": 0.7569,
+      "f1": 0.7923,
+      "auc": 0.9489,
       "matriz_confusao": [
         [
-          270,
-          60
+          998,
+          67
         ],
         [
-          64,
-          206
+          106,
+          330
         ]
       ]
     }
   ],
-  "melhor": "XGBoost"
+  "melhor": "Random Forest"
 }

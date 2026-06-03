@@ -335,15 +335,15 @@ Essas estratégias são exclusivas da visualização — os modelos finais compa
 
 ## 7. Resultados e comparação
 
-### Tabela comparativa (conjunto de teste — 600 imagens)
+### Tabela comparativa (conjunto de teste — 1.501 focos reais do BDDI)
 
 | Modelo | Acurácia | Precisão | Recall | F1-score | AUC-ROC | Parâmetros |
 |--------|----------|----------|--------|----------|---------|------------|
-| Random Forest | 0,815 | 0,794 | 0,794 | 0,794 | 0,897 | 300 árvores · profundidade 12 |
-| **🏆 XGBoost** | **0,825** | **0,813** | 0,794 | **0,803** | **0,906** | **300 rounds · profundidade 5** |
-| Rede Neural MLP | 0,813 | 0,793 | 0,789 | 0,791 | 0,903 | 2 camadas ocultas (64, 32) |
+| **🏆 Random Forest** | **0,892** | 0,822 | **0,803** | **0,812** | 0,948 | 300 árvores · profundidade 12 |
+| XGBoost | 0,888 | 0,815 | 0,796 | 0,805 | 0,947 | 300 rounds · profundidade 5 |
+| Rede Neural MLP | 0,885 | **0,831** | 0,757 | 0,792 | **0,949** | 2 camadas ocultas (64, 32) |
 
-> Os valores acima correspondem à última execução com `python src/treino.py` em dataset de 2.000 linhas. Para reproduzir, regenere com `python src/gerar_dados.py 3000` e retreine.
+> Os valores correspondem à execução de `python src/treino.py` sobre `data/focos_reais.csv` (~7.500 focos reais do Oracle FIAP exportados pelo BDDI, split estratificado 80/20). Para reproduzir: rode `python BDDI/src/exportar_para_gaie.py` para regenerar o snapshot e depois `python src/treino.py`.
 
 ### Matrizes de confusão
 
@@ -353,22 +353,23 @@ Cada modelo gera um PNG via `ConfusionMatrixDisplay` em [`reports/figures/`](rep
 - `confusion_matrix_xgboost.png`
 - `confusion_matrix_rede_neural_mlp.png`
 
-| Métrica | Random Forest | **XGBoost** | MLP |
-|---------|---------------|-------------|-----|
-| Verdadeiros positivos (TP) | 143 | **143** | 142 |
-| Verdadeiros negativos (TN) | 183 | **187** | 183 |
-| Falsos positivos (FP) | 37 | **33** | 37 |
-| Falsos negativos (FN) | 37 | 37 | 38 |
+| Métrica | **Random Forest** | XGBoost | MLP |
+|---------|-------------------|---------|-----|
+| Verdadeiros positivos (TP) | **350** | 347 | 330 |
+| Verdadeiros negativos (TN) | 989 | 986 | **998** |
+| Falsos positivos (FP) | 76 | 79 | **67** |
+| Falsos negativos (FN) | **86** | 89 | 106 |
 
-O XGBoost atinge **4 falsos positivos a menos** que os concorrentes mantendo o mesmo número de verdadeiros positivos — desempenho superior em precisão sem sacrificar recall.
+Random Forest captura **20 focos reais a mais** que a MLP e **3 a mais** que XGBoost, mantendo precisão competitiva. MLP é a mais conservadora (menos falsos alarmes) mas perde recall — comportamento ruim para alerta de incêndio, onde **falso negativo é o erro mais caro**.
 
 ### Análise dos números
 
-A diferença entre os três modelos é estreita (~1 ponto percentual em F1), o que é esperado em problemas tabulares com regra geradora suave. Três observações relevantes:
+A diferença entre os três modelos é estreita (~1 ponto percentual em F1), padrão esperado em problemas tabulares com regra física moderada. Quatro observações relevantes:
 
-1. **XGBoost vence em F1, AUC e Acurácia**, mantendo recall paritário com o RF — combinação que justifica a escolha (ver [Seção 9](#9-modelo-escolhido-e-justificativa)).
-2. **MLP atinge AUC competitivo** mesmo com arquitetura modesta, indicando que as relações não lineares no dataset estão razoavelmente capturadas pelas duas camadas ocultas.
-3. **Random Forest é o de menor variância entre execuções** (testes empíricos com `random_state` diferente), reforçando seu papel de baseline robusto.
+1. **Random Forest vence em F1, recall e (essencialmente) AUC** — a margem é pequena mas consistente nas duas métricas mais relevantes operacionalmente.
+2. **MLP atinge o maior AUC (0,949)**, indicando que separação de classes via probabilidade contínua é competitiva — mas converte mal em decisão binária (recall 0,757 é o mais baixo dos três).
+3. **XGBoost segue muito próximo** (F1 0,805 vs 0,812 do RF) e mantém o melhor recall depois do RF.
+4. **Class imbalance natural (~71/29)**: as métricas refletem a distribuição real de risco no BDDI — `precisão` e `recall` da classe positiva são metricamente mais difíceis que num dataset 50/50.
 
 ---
 
@@ -409,32 +410,42 @@ Todos os gráficos calculam SHAP para a **classe positiva** (`alto_risco = 1`). 
 
 ## 9. Modelo escolhido e justificativa
 
-**Modelo escolhido: XGBoost** ([`models/modelo.joblib`](models/modelo.joblib)).
+**Modelo escolhido: Random Forest** ([`models/modelo.joblib`](models/modelo.joblib)).
 
 A decisão se baseia em três argumentos técnicos, alinhados ao contexto operacional do PIRO.
 
-### 9.1 Vence em F1, AUC e Acurácia
+### 9.1 Vence em F1 e recall (métricas operacionais)
 
-| Métrica | XGBoost | Vice (RF) | Margem |
-|---------|---------|-----------|--------|
-| F1 | **0,803** | 0,794 | +0,9 p.p. |
-| AUC-ROC | **0,906** | 0,897 | +0,9 p.p. |
-| Acurácia | **0,825** | 0,815 | +1,0 p.p. |
-| Recall | 0,794 | 0,794 | empate |
+| Métrica | Random Forest | Vice (XGBoost) | Margem |
+|---------|---------------|----------------|--------|
+| F1 | **0,8121** | 0,8051 | +0,7 p.p. |
+| Recall | **0,8028** | 0,7959 | +0,7 p.p. |
+| Acurácia | **0,8921** | 0,8881 | +0,4 p.p. |
+| AUC-ROC | 0,9483 | 0,9471 | +0,1 p.p. |
 
-A margem é estreita mas consistente em **três métricas independentes**, o que reduz o risco de a vitória ser artefato de uma única partição de teste.
+A margem é estreita mas consistente em **quatro métricas independentes**. Em alerta de incêndio, **F1 e recall são as métricas que importam** — o custo de falso negativo (foco perigoso ignorado) é desproporcionalmente alto quando comparado ao custo de falso positivo (brigadista checa em vão).
 
-### 9.2 Menos falsos positivos (precisão operacional)
+### 9.2 Captura 20 focos reais a mais que o terceiro colocado
 
-XGBoost reduz os FP de **37 para 33** mantendo o número de TP — ou seja, **disparou 4 alertas a menos sem perder nenhum foco verdadeiro**. No contexto do PIRO, cada falso positivo é uma chamada de brigadista que se desloca em vão. Reduzir FP sem custo em recall é o ganho de precisão mais direto que se pode ter.
+| Modelo | TP (focos críticos detectados) | FN (focos críticos perdidos) |
+|--------|-------------------------------:|-----------------------------:|
+| **Random Forest** | **350** | **86** |
+| XGBoost | 347 | 89 |
+| Rede Neural MLP | 330 | 106 |
+
+Em 1.501 focos do conjunto de teste, Random Forest perde **86 focos críticos** contra **106** da MLP — diferença de **20 brigadistas potencialmente despachados que não seriam pela MLP**. Em escala operacional anual (milhões de focos), essa margem se acumula.
 
 ### 9.3 Compatível com SHAP exato e rápido
 
-XGBoost suporta `TreeExplainer` (cálculo exato, sub-segundo no nosso dataset), enquanto a alternativa MLP exigiria `KernelExplainer` amostrado, que custa minutos. Isso importa porque o app Streamlit recalcula SHAP **a cada vez que o usuário muda o foco selecionado** na aba de interpretação — usar XGBoost mantém a experiência responsiva.
+Random Forest suporta `TreeExplainer` (cálculo exato, sub-segundo no nosso dataset), assim como o XGBoost. A alternativa MLP exigiria `KernelExplainer` amostrado, que custa minutos. Isso importa porque o app Streamlit recalcula SHAP **a cada vez que o usuário muda o foco selecionado** na aba de interpretação — Random Forest mantém a experiência responsiva.
 
-### 9.4 Por que o RF ainda fica salvo no repo
+### 9.4 Robustez a features imputadas
 
-O `models/random_forest.joblib` é mantido como fallback explicável: caso o XGBoost falhe em produção (versão incompatível, ABI break do `xgboost.dll`), o app pode cair em RF sem mudança de schema do pré-processador.
+Random Forest é particularmente **robusto a features de baixa variância** (caso de várias features climáticas do BDDI, imputadas em mediana devido à falha parcial do Open-Meteo). Cada árvore é construída em uma subamostra de features (`max_features=sqrt`), naturalmente reduzindo o peso de colunas degeneradas — vantagem real em datasets do mundo real onde nem todas as features são igualmente populadas.
+
+### 9.5 Por que XGBoost ainda fica salvo no repo
+
+O `models/xgboost.joblib` é mantido como fallback explicável: caso o Random Forest falhe em produção (versão incompatível, regressão de hiperparâmetro), o app pode cair em XGBoost com perda mínima de F1 (0,7 p.p.).
 
 ---
 

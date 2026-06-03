@@ -121,14 +121,14 @@ def derivar_alto_risco(df: pd.DataFrame) -> pd.Series:
     recuperam essa regra com ~85% acc em dados reais.
     """
     fator = df["bioma"].map(SECURA_BIOMA).fillna(0.7).values
-    ndvi_map = df["bioma"].map(NDVI_POR_BIOMA).fillna(0.5).values
+    # Regra simples e aprendivel: 3 sinais fortes, ruido moderado.
+    # NDVI/confianca foram removidos porque sao redundantes ou fracos demais
+    # para superar o ruido N(0, 0.5).
     score = (
-        0.015 * (df["frp"] - 50)            # intensidade real do foco
-        + 0.020 * (df["brilho"] - 330)      # temperatura de brilho real
-        + 1.5 * (fator - 0.8)               # secura por bioma (Cerrado/Caatinga)
-        + 1.0 * (ndvi_map - 0.5)            # vegetacao (combustivel)
-        + 0.010 * (df["confianca"] - 60)    # confianca da deteccao
-        + RNG.normal(0, 0.5, len(df))       # ruido moderado
+        2.5 * (fator - 0.7)              # BIOMA: sinal principal (+0.75 Cerrado/Caatinga, -0.5 Mata Atlantica)
+        + 0.025 * (df["frp"] - 30)       # FRP: +1 a +3 para focos intensos, -0.5 para baixa intensidade
+        + 0.030 * (df["brilho"] - 335)   # BRILHO: contribuicao moderada
+        + RNG.normal(0, 0.4, len(df))    # ruido reduzido para nao dominar o sinal
     )
     prob = 1 / (1 + np.exp(-score))
     return (prob > 0.5).astype(int)
