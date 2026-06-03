@@ -304,7 +304,9 @@ with abas[2]:
             with col:
                 st.markdown(f"**{nome}**")
                 png = _render_cm_png(tuple(tuple(linha) for linha in m["metrics"]["cm"]))
-                st.image(png, use_container_width=True)
+                # No Streamlit 1.37 st.image usa `use_column_width` (alias para
+                # use_container_width foi adicionado em versoes posteriores).
+                st.image(png, use_column_width=True)
 
 # ==========================================================================
 # ABA 4 — SHAP
