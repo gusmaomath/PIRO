@@ -39,10 +39,11 @@ git push origin main
    ```
    streamlit run src/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
    ```
-   (Ja vem do `railway.json` e do `nixpacks.toml`; so confira.)
-4. O builder e **Nixpacks** com config customizada em `nixpacks.toml` (raiz do GAIE)
-   apontando para `deploy/requirements.txt`. **Nao** precisa de `requirements.txt`
-   na raiz — o Nixpacks le o `[phases.install]` do nixpacks.toml.
+   (Ja vem do `railway.json`; so confira.)
+4. O builder e **Nixpacks** com auto-deteccao. Como temos `requirements.txt` na
+   raiz do GAIE (que faz `-r deploy/requirements.txt`) + `runtime.txt` na raiz
+   (Python 3.12.7), o Nixpacks reconhece o projeto Python e configura
+   automaticamente python + pip + venv + instalacao. Sem `nixpacks.toml`.
 
 ## Passo 4 — Gere o domínio público
 1. Vá em **Settings → Networking → Public Networking**.

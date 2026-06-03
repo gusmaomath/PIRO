@@ -1,0 +1,4 @@
+# Arquivo de raiz exigido por Railway/Nixpacks para detectar projeto Python.
+# As dependencias reais ficam em deploy/requirements.txt.
+# Pip entende '-r outro.txt' como inclusao recursiva.
+-r deploy/requirements.txt
