@@ -46,6 +46,8 @@ BDDI/standalone_admin_password.txt
 # ---- GAIE ----
 # Dataset gerado deterministicamente por gerar_dados.py (seed=42)
 GAIE/data/*.csv
+# Mas focos_reais.csv (snapshot do Oracle FIAP) E commit - e a integracao BDDI->GAIE.
+!GAIE/data/focos_reais.csv
 
 # Modelos treinados (regeneraveis via treino.py).
 # O app Streamlit treina ao vivo na aba "Treinar ao vivo" - nao depende destes joblibs.

@@ -43,10 +43,18 @@ from pipeline import (ALVO, CONFUSION_DIR, DATASET_PATH, FIGURES_DIR,
 # Dados
 # ==========================================================================
 def carregar_dados() -> pd.DataFrame:
+    # Preferencia: snapshot real do Oracle FIAP (exportado pelo BDDI)
+    reais = DATASET_PATH.parent / "focos_reais.csv"
+    if reais.exists():
+        print(f"[treino] usando dados REAIS do BDDI: {reais}")
+        return pd.read_csv(reais)
+    # Fallback 1: CSV sintetico ja gerado
     if DATASET_PATH.exists():
+        print(f"[treino] usando CSV sintetico: {DATASET_PATH}")
         return pd.read_csv(DATASET_PATH)
-    print(f"CSV nao encontrado em {DATASET_PATH}, gerando dataset sintetico...")
-    df = gerar(3000)
+    # Fallback 2: gerar agora
+    print(f"[treino] nenhum CSV encontrado, gerando sintetico em {DATASET_PATH}")
+    df = gerar(10000)
     DATASET_PATH.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(DATASET_PATH, index=False)
     return df

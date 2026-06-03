@@ -38,9 +38,24 @@ st.set_page_config(page_title="PIRO · GAIE", page_icon="🛰️", layout="wide"
 # --------------------------------------------------------------------------
 @st.cache_data
 def carregar_dados():
+    # Preferencia: snapshot real do Oracle FIAP (exportado pelo BDDI)
+    reais = DATASET_PATH.parent / "focos_reais.csv"
+    if reais.exists():
+        return pd.read_csv(reais)
+    # Fallback 1: CSV sintetico ja gerado por gerar_dados.py
     if DATASET_PATH.exists():
         return pd.read_csv(DATASET_PATH)
-    return gerar(3000)
+    # Fallback 2: gera em memoria (ultimo recurso para deploy sem CSV)
+    return gerar(10000)
+
+
+def fonte_dos_dados() -> str:
+    reais = DATASET_PATH.parent / "focos_reais.csv"
+    if reais.exists():
+        return "Oracle FIAP (BDDI)"
+    if DATASET_PATH.exists():
+        return "CSV sintetico (gerar_dados.py)"
+    return "Gerador sintetico em memoria"
 
 
 @st.cache_resource
@@ -82,14 +97,27 @@ with abas[0]:
         "Nem todo foco vira um grande incendio. **O modelo preve se um foco tem ALTO RISCO "
         "de se propagar nas proximas 24h**, para priorizar a resposta de brigadistas. "
         "Classificacao binaria: `alto_risco` = 0 ou 1.")
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3, c4 = st.columns(4)
     df = D["df"]
+    fonte = fonte_dos_dados()
     c1.metric("Linhas no dataset", f"{len(df):,}")
     c2.metric("Colunas (features)", df.shape[1] - 1)
     c3.metric("% alto risco", f"{df['alto_risco'].mean()*100:.1f}%")
-    st.markdown("**Fonte dos dados:** dataset sintetico gerado por IA generativa "
-                "(`gerar_dados.py`), com regra fisica latente + ruido. "
-                "Em producao, e alimentado pelo pipeline BDDI (Airflow -> Oracle).")
+    c4.metric("Fonte", fonte.split(" ")[0])
+    if "Oracle" in fonte:
+        st.success(
+            "**Fonte dos dados:** snapshot do **Oracle FIAP** populado pela camada "
+            "BDDI deste projeto (NASA FIRMS + Open-Meteo, MERGE idempotente). "
+            "O alvo `alto_risco` e derivado da mesma regra fisica latente usada "
+            "no gerador sintetico para garantir comparabilidade entre as duas fontes."
+        )
+    else:
+        st.info(
+            "**Fonte dos dados:** dataset sintetico gerado por regra fisica latente "
+            "(`gerar_dados.py`) com seed=42. Em producao, e alimentado pelo "
+            "snapshot do Oracle FIAP exportado pela camada BDDI "
+            "(`BDDI/src/exportar_para_gaie.py`)."
+        )
     st.dataframe(df.head(20), use_container_width=True)
     st.markdown("**Engenharia de atributos** cria: `indice_secura` (temp/umidade), "
                 "`estacao_seca` (dias sem chuva >= 10), `vento_forte` (vento >= 20 km/h).")
