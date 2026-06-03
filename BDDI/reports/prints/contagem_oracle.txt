@@ -1,0 +1,2 @@
+focos_incendio: 7502
+clima_associado: 7502

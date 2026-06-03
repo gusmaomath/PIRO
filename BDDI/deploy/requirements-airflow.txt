@@ -1,0 +1,16 @@
+# OPCIONAL: instalacao completa do Airflow local fora do Docker.
+# NAO use no dia-a-dia — Airflow tem ~200 dependencias e demora.
+# Use docker compose up -d em deploy/ — e muito mais simples.
+#
+# Para instalar:
+#   pip install -r deploy/requirements-airflow.txt \
+#     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.12.txt"
+#
+# Note que as versoes de oracledb/etc sao fixadas pelo constraints file,
+# nao por este arquivo. Mantenha apenas as bibliotecas "principais" aqui.
+apache-airflow==2.9.3
+apache-airflow-providers-oracle
+oracledb
+requests
+pandas
+python-dotenv

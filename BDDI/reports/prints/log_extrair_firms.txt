@@ -1,0 +1,86 @@
+620d9b98e690
+*** Found local files:
+***   * /opt/airflow/logs/dag_id=piro_pipeline_queimadas/run_id=manual__2026-06-02T21:44:09.959144+00:00/task_id=extrair/attempt=1.log
+[2026-06-02T21:48:17.553+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-06-02T21:48:17.575+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: piro_pipeline_queimadas.extrair manual__2026-06-02T21:44:09.959144+00:00 [queued]>
+[2026-06-02T21:48:17.578+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: piro_pipeline_queimadas.extrair manual__2026-06-02T21:44:09.959144+00:00 [queued]>
+[2026-06-02T21:48:17.578+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 3
+[2026-06-02T21:48:17.587+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): extrair> on 2026-06-02 21:44:09.959144+00:00
+[2026-06-02T21:48:17.591+0000] {standard_task_runner.py:64} INFO - Started process 225 to run task
+[2026-06-02T21:48:17.592+0000] {standard_task_runner.py:90} INFO - Running: ['airflow', 'tasks', 'run', 'piro_pipeline_queimadas', 'extrair', 'manual__2026-06-02T21:44:09.959144+00:00', '--job-id', '4', '--raw', '--subdir', 'DAGS_FOLDER/piro_pipeline_dag.py', '--cfg-path', '/tmp/tmpuvd3yc_0']
+[2026-06-02T21:48:17.593+0000] {standard_task_runner.py:91} INFO - Job 4: Subtask extrair
+[2026-06-02T21:48:17.618+0000] {task_command.py:426} INFO - Running <TaskInstance: piro_pipeline_queimadas.extrair manual__2026-06-02T21:44:09.959144+00:00 [running]> on host 620d9b98e690
+[2026-06-02T21:48:17.659+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='equipe_piro' AIRFLOW_CTX_DAG_ID='piro_pipeline_queimadas' AIRFLOW_CTX_TASK_ID='extrair' AIRFLOW_CTX_EXECUTION_DATE='2026-06-02T21:44:09.959144+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-06-02T21:44:09.959144+00:00'
+[2026-06-02T21:48:17.660+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-06-02T21:48:25.269+0000] {logging_mixin.py:188} INFO - [FIRMS] 7762 focos REAIS coletados em 7 dia(s).
+[2026-06-02T21:48:38.583+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 3 falhou; pulando.
+[2026-06-02T21:48:49.656+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 4 falhou; pulando.
+[2026-06-02T21:49:00.864+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 5 falhou; pulando.
+[2026-06-02T21:49:11.912+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 6 falhou; pulando.
+[2026-06-02T21:49:25.236+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 9 falhou; pulando.
+[2026-06-02T21:49:36.356+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 10 falhou; pulando.
+[2026-06-02T21:49:47.326+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 11 falhou; pulando.
+[2026-06-02T21:49:58.435+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 12 falhou; pulando.
+[2026-06-02T21:50:10.468+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 13 falhou; pulando.
+[2026-06-02T21:50:22.552+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 14 falhou; pulando.
+[2026-06-02T21:50:33.712+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 15 falhou; pulando.
+[2026-06-02T21:50:44.687+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 16 falhou; pulando.
+[2026-06-02T21:50:55.772+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 17 falhou; pulando.
+[2026-06-02T21:51:06.957+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 18 falhou; pulando.
+[2026-06-02T21:51:17.905+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 19 falhou; pulando.
+[2026-06-02T21:51:29.015+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 20 falhou; pulando.
+[2026-06-02T21:51:40.032+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 21 falhou; pulando.
+[2026-06-02T21:51:51.102+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 22 falhou; pulando.
+[2026-06-02T21:52:02.229+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 23 falhou; pulando.
+[2026-06-02T21:52:13.209+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 24 falhou; pulando.
+[2026-06-02T21:52:24.290+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 25 falhou; pulando.
+[2026-06-02T21:52:35.390+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 26 falhou; pulando.
+[2026-06-02T21:52:46.333+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 27 falhou; pulando.
+[2026-06-02T21:52:57.444+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 28 falhou; pulando.
+[2026-06-02T21:53:08.457+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 29 falhou; pulando.
+[2026-06-02T21:53:19.524+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 30 falhou; pulando.
+[2026-06-02T21:53:30.617+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 31 falhou; pulando.
+[2026-06-02T21:53:41.626+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 32 falhou; pulando.
+[2026-06-02T21:53:52.726+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 33 falhou; pulando.
+[2026-06-02T21:54:03.845+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 34 falhou; pulando.
+[2026-06-02T21:54:14.800+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 35 falhou; pulando.
+[2026-06-02T21:54:25.936+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 36 falhou; pulando.
+[2026-06-02T21:54:36.936+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 37 falhou; pulando.
+[2026-06-02T21:54:48.001+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 38 falhou; pulando.
+[2026-06-02T21:54:59.101+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 39 falhou; pulando.
+[2026-06-02T21:55:10.083+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 40 falhou; pulando.
+[2026-06-02T21:55:21.140+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 41 falhou; pulando.
+[2026-06-02T21:55:32.271+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 42 falhou; pulando.
+[2026-06-02T21:55:43.355+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 43 falhou; pulando.
+[2026-06-02T21:55:54.472+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 44 falhou; pulando.
+[2026-06-02T21:56:05.613+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 45 falhou; pulando.
+[2026-06-02T21:56:16.548+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 46 falhou; pulando.
+[2026-06-02T21:56:27.675+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 47 falhou; pulando.
+[2026-06-02T21:56:38.661+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 48 falhou; pulando.
+[2026-06-02T21:56:49.733+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 49 falhou; pulando.
+[2026-06-02T21:57:00.892+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 50 falhou; pulando.
+[2026-06-02T21:57:11.834+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 51 falhou; pulando.
+[2026-06-02T21:57:22.933+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 52 falhou; pulando.
+[2026-06-02T21:57:34.039+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 53 falhou; pulando.
+[2026-06-02T21:57:44.986+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 54 falhou; pulando.
+[2026-06-02T21:57:56.081+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 55 falhou; pulando.
+[2026-06-02T21:58:07.062+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 56 falhou; pulando.
+[2026-06-02T21:58:18.118+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 57 falhou; pulando.
+[2026-06-02T21:58:29.200+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 58 falhou; pulando.
+[2026-06-02T21:58:40.178+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 59 falhou; pulando.
+[2026-06-02T21:58:51.250+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 60 falhou; pulando.
+[2026-06-02T21:59:02.379+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 61 falhou; pulando.
+[2026-06-02T21:59:13.338+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 62 falhou; pulando.
+[2026-06-02T21:59:24.443+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 63 falhou; pulando.
+[2026-06-02T21:59:35.556+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 64 falhou; pulando.
+[2026-06-02T21:59:46.493+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 65 falhou; pulando.
+[2026-06-02T21:59:57.595+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 66 falhou; pulando.
+[2026-06-02T22:00:08.705+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 67 falhou; pulando.
+[2026-06-02T22:01:25.945+0000] {logging_mixin.py:188} INFO - [Open-Meteo] lote 78 falhou; pulando.
+[2026-06-02T22:01:25.948+0000] {logging_mixin.py:188} INFO - [Open-Meteo] clima REAL para 1400 focos.
+[2026-06-02T22:01:26.011+0000] {python.py:237} INFO - Done. Returned value was: {'focos': '/opt/airflow/data/staging/focos_raw.csv', 'clima': '/opt/airflow/data/staging/clima_raw.csv'}
+[2026-06-02T22:01:26.011+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-06-02T22:01:26.026+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=piro_pipeline_queimadas, task_id=extrair, run_id=manual__2026-06-02T21:44:09.959144+00:00, execution_date=20260602T214409, start_date=20260602T214817, end_date=20260602T220126
+[2026-06-02T22:01:26.062+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-06-02T22:01:26.075+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-06-02T22:01:26.079+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

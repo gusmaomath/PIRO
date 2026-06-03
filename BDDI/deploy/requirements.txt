@@ -1,0 +1,16 @@
+# Dependencias para rodar localmente (sem Airflow):
+#   - src/database.py    (setup + 6 consultas no Oracle)
+#   - src/coleta_apis.py (FIRMS + Open-Meteo)
+#   - src/transformacao.py
+#   - src/carga_oracle.py
+#   - src/relatorio.py
+#
+# O Airflow roda dentro do container Docker (ver deploy/docker-compose.yml),
+# que instala suas proprias dependencias via _PIP_ADDITIONAL_REQUIREMENTS.
+# Para subir o Airflow local fora do Docker (nao recomendado), use:
+#   pip install -r deploy/requirements-airflow.txt
+oracledb==2.2.0
+requests==2.32.3
+pandas==2.2.2
+python-dotenv==1.0.1
+fpdf2==2.7.9

@@ -1,0 +1,63 @@
+# =============================================================================
+# PIRO - .gitignore
+# Estrategia: ignorar lixo regeneravel; commitar evidencia da entrega.
+# =============================================================================
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ---- Ambientes virtuais ----
+.venv/
+venv/
+env/
+
+# ---- Segredos: NUNCA commitar ----
+.env
+*.env
+**/.env
+!**/.env.example
+
+# ---- IDE / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- BDDI ----
+# Staging CSVs sao intermediarios da DAG, regenerados em cada execucao.
+BDDI/data/staging/*.csv
+
+# Logs do Airflow standalone (montam dentro do container)
+BDDI/logs/
+BDDI/deploy/logs/
+BDDI/airflow.db
+BDDI/standalone_admin_password.txt
+
+# NOTA: BDDI/reports/RELATORIO_BDDI.pdf E COMMIT (e a entrega).
+# NOTA: BDDI/reports/prints/*.{png,txt} SAO COMMIT (evidencia para o PDF).
+
+# ---- GAIE ----
+# Dataset gerado deterministicamente por gerar_dados.py (seed=42)
+GAIE/data/*.csv
+
+# Modelos treinados (regeneraveis via treino.py).
+# O app Streamlit treina ao vivo na aba "Treinar ao vivo" - nao depende destes joblibs.
+GAIE/models/*.joblib
+
+# NOTA: GAIE/reports/figures/*.png SAO COMMIT (3 matrizes + 3 SHAP, evidencia).
+# NOTA: GAIE/reports/metricas.json E COMMIT (resultados das 3 comparacoes).
+
+# ---- Streamlit ----
+.streamlit/secrets.toml
+**/.streamlit/secrets.toml
+
+# ---- Empacotamentos / artefatos ----
+*.zip
+*.tar.gz
+*.tgz

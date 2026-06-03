@@ -1,0 +1,66 @@
+[query] contagens:
+  focos_incendio: 7502 linhas
+  clima_associado: 7502 linhas
+  imagens_satelite_metadata: 0 linhas
+
+========== Consulta 1: SELECT estado, ==========
+ESTADO | TOTAL_FOCOS | FRP_MEDIO
+MT | 2345 | 6.8
+?? | 1349 | 5.5
+TO | 909 | 10.4
+PA | 753 | 7.8
+MA | 362 | 7.4
+BA | 357 | 7.4
+MG | 351 | 4.2
+AM | 287 | 7.1
+MS | 206 | 5.3
+RO | 206 | 8.4
+
+========== Consulta 2: SELECT TRUNC(data_foco)   AS dia, ==========
+DIA | FOCOS_NO_DIA
+2026-05-27 00:00:00 | 1525
+2026-05-28 00:00:00 | 1696
+2026-05-29 00:00:00 | 1306
+2026-05-30 00:00:00 | 962
+2026-05-31 00:00:00 | 1015
+2026-06-02 00:00:00 | 998
+
+========== Consulta 3: SELECT f.bioma, ==========
+BIOMA | QTD_FOCOS | TEMP_MEDIA | UMIDADE_MEDIA | VENTO_MEDIO | FOCOS_EM_SECA
+Cerrado | 2823 | 25.3 | 68.3 | 7.7 | 0
+Mata Atlantica | 1569 | 25.5 | 66.7 | 7.6 | 0
+Desconhecido | 1480 | 24.9 | 71 | 7.3 | 4
+Amazonia | 1056 | 25.9 | 67.3 | 7.6 | 0
+Caatinga | 382 | 25.3 | 68.7 | 8.1 | 0
+Pampa | 102 | 23.9 | 70.8 | 8.1 | 0
+Pantanal | 90 | 25.4 | 68.9 | 7.3 | 0
+
+========== Consulta 4: SELECT id_externo, estado, bioma, frp, brilho, data_foco ==========
+ID_EXTERNO | ESTADO | BIOMA | FRP | BRILHO | DATA_FOCO
+-11.619|-52.5485|2026-05-31|1652 | MT | Cerrado | 214.0 | 342.8 | 2026-05-31 00:00:00
+-10.7915|-46.9353|2026-05-30|1711 | TO | Mata Atlantica | 195.0 | 367.0 | 2026-05-30 00:00:00
+-18.6782|-48.5898|2026-05-28|1605 | GO | Cerrado | 176.5 | 354.4 | 2026-05-28 00:00:00
+-14.1686|-58.9001|2026-06-02|1756 | MT | Cerrado | 172.6 | 349.8 | 2026-06-02 00:00:00
+-12.3757|-43.2832|2026-05-29|1550 | BA | Caatinga | 164.5 | 367.0 | 2026-05-29 00:00:00
+-10.9095|-49.9565|2026-05-31|1654 | TO | Cerrado | 150.1 | 352.0 | 2026-05-31 00:00:00
+-14.0303|-58.3853|2026-06-02|1756 | MT | Cerrado | 147.7 | 357.5 | 2026-06-02 00:00:00
+-14.0639|-58.8438|2026-05-30|1711 | MT | Cerrado | 130.5 | 353.9 | 2026-05-30 00:00:00
+-14.0633|-58.8392|2026-05-30|1711 | MT | Cerrado | 130.5 | 367.0 | 2026-05-30 00:00:00
+-10.9038|-47.0008|2026-06-02|1616 | TO | Mata Atlantica | 129.7 | 352.4 | 2026-06-02 00:00:00
+
+========== Consulta 5: SELECT satelite, ==========
+SATELITE | QTD | FRP_MIN | FRP_MEDIO | FRP_MAX | CONFIANCA_MEDIA
+N | 7502 | 0.1 | 7.1 | 214 | 66.3
+
+========== Consulta 6: SELECT f.estado, ==========
+ESTADO | BIOMA | FOCOS_CRITICOS | FRP_MEDIO | UMIDADE_MEDIA | FRP_MAX
+TO | Mata Atlantica | 23 | 73.8 | 55.9 | 195
+MT | Cerrado | 22 | 82.3 | 69 | 214
+PA | Amazonia | 13 | 71.3 | 64.6 | 94.1
+TO | Cerrado | 4 | 105.9 | 69 | 150.1
+?? | Desconhecido | 3 | 61.2 | 80.3 | 64.6
+RS | Pampa | 2 | 126 | 80 | 126
+BA | Caatinga | 2 | 108.8 | 61 | 164.5
+GO | Cerrado | 2 | 148.1 | 69 | 176.5
+MA | Mata Atlantica | 1 | 117.8 | 69 | 117.8
+RO | Desconhecido | 1 | 59.4 | 69 | 59.4

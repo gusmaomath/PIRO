@@ -1,0 +1,59 @@
+{
+  "resultados": [
+    {
+      "modelo": "Random Forest",
+      "acuracia": 0.8317,
+      "precisao": 0.8421,
+      "recall": 0.7704,
+      "f1": 0.8046,
+      "auc": 0.9228,
+      "matriz_confusao": [
+        [
+          291,
+          39
+        ],
+        [
+          62,
+          208
+        ]
+      ]
+    },
+    {
+      "modelo": "XGBoost",
+      "acuracia": 0.8467,
+      "precisao": 0.8321,
+      "recall": 0.8259,
+      "f1": 0.829,
+      "auc": 0.9201,
+      "matriz_confusao": [
+        [
+          285,
+          45
+        ],
+        [
+          47,
+          223
+        ]
+      ]
+    },
+    {
+      "modelo": "Rede Neural (MLP)",
+      "acuracia": 0.7933,
+      "precisao": 0.7744,
+      "recall": 0.763,
+      "f1": 0.7687,
+      "auc": 0.8894,
+      "matriz_confusao": [
+        [
+          270,
+          60
+        ],
+        [
+          64,
+          206
+        ]
+      ]
+    }
+  ],
+  "melhor": "XGBoost"
+}

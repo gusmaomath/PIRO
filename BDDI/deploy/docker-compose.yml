@@ -1,0 +1,26 @@
+# Airflow standalone para desenvolvimento local do BDDI.
+# Executor local + SQLite -> simples, suficiente para a avaliacao.
+# Caminhos relativos a este arquivo (BDDI/deploy/). Por isso usamos ../ para
+# acessar src/, dags/, sql/, config/.
+#
+# Como subir:
+#   cd BDDI/deploy
+#   docker compose up -d
+services:
+  airflow:
+    image: apache/airflow:2.9.3-python3.10
+    ports:
+      - "8080:8080"
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      _PIP_ADDITIONAL_REQUIREMENTS: "oracledb==2.2.0 requests==2.32.3 pandas==2.2.2 apache-airflow-providers-oracle==3.10.3 python-dotenv==1.0.1"
+    env_file:
+      - ../config/.env
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../src:/opt/airflow/scripts          # modulos de negocio acessiveis ao DAG
+      - ../sql:/opt/airflow/sql
+      - ../data:/opt/airflow/data
+      - ../config/.env:/opt/airflow/.env     # config.py procura aqui dentro do container
+    command: standalone
