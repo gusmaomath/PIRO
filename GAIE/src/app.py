@@ -13,6 +13,7 @@ Abas:
 
 Rodar local:  streamlit run app.py
 """
+import io
 import time
 import numpy as np
 import pandas as pd
@@ -24,8 +25,31 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import (accuracy_score, f1_score, roc_auc_score,
-                             confusion_matrix)
+from sklearn.metrics import (accuracy_score, ConfusionMatrixDisplay,
+                             confusion_matrix, f1_score, roc_auc_score)
+
+
+@st.cache_data(show_spinner=False)
+def _render_cm_png(cm_tuple) -> bytes:
+    """Renderiza a matriz de confusao como PNG bytes uma unica vez por valor.
+
+    cm_tuple e um tuple de tuples (hashable) pra que o cache do Streamlit
+    funcione. O reuso e tab-switch nao re-renderizam: retornam direto do cache.
+    """
+    cm = np.array(cm_tuple)
+    fig, ax = plt.subplots(figsize=(3.2, 2.8))
+    disp = ConfusionMatrixDisplay(
+        confusion_matrix=cm,
+        display_labels=["baixo", "alto"],
+    )
+    disp.plot(ax=ax, cmap="Oranges", colorbar=False, values_format="d")
+    ax.set_title("")
+    plt.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=100, bbox_inches="tight")
+    plt.close(fig)
+    buf.seek(0)
+    return buf.getvalue()
 
 from pipeline import (DATASET_PATH, CATEGORICAS, RANDOM_STATE,
                       construir_preprocessador, separar_X_y)
@@ -267,7 +291,6 @@ with abas[2]:
     if not st.session_state.modelos:
         st.info("Treine pelo menos um modelo na aba **Treinar ao vivo**.")
     else:
-        from sklearn.metrics import ConfusionMatrixDisplay
         linhas = [{"Modelo": nome, "Acuracia": round(m["metrics"]["acuracia"], 4),
                    "F1": round(m["metrics"]["f1"], 4), "AUC": round(m["metrics"]["auc"], 4)}
                   for nome, m in st.session_state.modelos.items()]
@@ -280,18 +303,8 @@ with abas[2]:
         for col, (nome, m) in zip(cols, st.session_state.modelos.items()):
             with col:
                 st.markdown(f"**{nome}**")
-                cm = np.array(m["metrics"]["cm"])
-                # Cria figura nova e fecha explicitamente apos render:
-                # `clear_figure=True` no st.pyplot causa bug visual quando
-                # multiplos plt.subplots() coexistem no mesmo run do script.
-                fig, ax = plt.subplots(figsize=(3.2, 2.8))
-                disp = ConfusionMatrixDisplay(
-                    confusion_matrix=cm,
-                    display_labels=["baixo", "alto"])
-                disp.plot(ax=ax, cmap="Oranges", colorbar=False, values_format="d")
-                ax.set_title("")
-                st.pyplot(fig, use_container_width=True)
-                plt.close(fig)
+                png = _render_cm_png(tuple(tuple(linha) for linha in m["metrics"]["cm"]))
+                st.image(png, use_container_width=True)
 
 # ==========================================================================
 # ABA 4 — SHAP
