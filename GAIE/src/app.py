@@ -102,6 +102,10 @@ with abas[1]:
     st.markdown("Cada modelo e treinado **incrementalmente**: o grafico se atualiza "
                 "a cada passo, mostrando o aprendizado acontecendo. **3 tecnicas** "
                 "para a comparacao GAIE.")
+    st.warning("⚠️ Treine **um modelo de cada vez**. Aguarde a barra de progresso "
+               "chegar ao fim (mensagem `OK · acc=... · auc=...`) antes de clicar no "
+               "botao do proximo modelo. Treinos simultaneos podem corromper o estado "
+               "da sessao Streamlit.")
 
     colA, colB, colC = st.columns(3)
 
@@ -249,13 +253,17 @@ with abas[2]:
             with col:
                 st.markdown(f"**{nome}**")
                 cm = np.array(m["metrics"]["cm"])
+                # Cria figura nova e fecha explicitamente apos render:
+                # `clear_figure=True` no st.pyplot causa bug visual quando
+                # multiplos plt.subplots() coexistem no mesmo run do script.
                 fig, ax = plt.subplots(figsize=(3.2, 2.8))
                 disp = ConfusionMatrixDisplay(
                     confusion_matrix=cm,
                     display_labels=["baixo", "alto"])
                 disp.plot(ax=ax, cmap="Oranges", colorbar=False, values_format="d")
                 ax.set_title("")
-                st.pyplot(fig, use_container_width=True, clear_figure=True)
+                st.pyplot(fig, use_container_width=True)
+                plt.close(fig)
 
 # ==========================================================================
 # ABA 4 — SHAP
