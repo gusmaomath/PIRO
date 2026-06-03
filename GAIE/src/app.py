@@ -154,10 +154,14 @@ with abas[1]:
     st.markdown("Cada modelo e treinado **incrementalmente**: o grafico se atualiza "
                 "a cada passo, mostrando o aprendizado acontecendo. **3 tecnicas** "
                 "para a comparacao GAIE.")
-    st.warning("⚠️ Treine **um modelo de cada vez**. Aguarde a barra de progresso "
-               "chegar ao fim (mensagem `OK · acc=... · auc=...`) antes de clicar no "
-               "botao do proximo modelo. Treinos simultaneos podem corromper o estado "
-               "da sessao Streamlit.")
+    st.warning(
+        "⚠️ **Treine um modelo de cada vez.** Aguarde a barra de progresso "
+        "chegar ao fim (mensagem verde `OK · acc=... · auc=...`) **E** o "
+        "indicador **🟠 RUNNING** desaparecer do canto superior direito da tela "
+        "antes de clicar no botao do proximo modelo. Treinos simultaneos podem "
+        "corromper o estado da sessao Streamlit e voce vai precisar recarregar "
+        "a pagina."
+    )
 
     colA, colB, colC = st.columns(3)
 
@@ -291,6 +295,13 @@ with abas[2]:
     if not st.session_state.modelos:
         st.info("Treine pelo menos um modelo na aba **Treinar ao vivo**.")
     else:
+        st.info(
+            "ℹ️ As matrizes de confusao sao renderizadas como PNG na primeira "
+            "visita a esta aba. Se aparecer o indicador **🟠 RUNNING** no canto "
+            "superior direito, aguarde ele desaparecer antes de interagir com "
+            "outras abas. Apos o primeiro render, as imagens ficam em cache e "
+            "carregam instantaneamente."
+        )
         linhas = [{"Modelo": nome, "Acuracia": round(m["metrics"]["acuracia"], 4),
                    "F1": round(m["metrics"]["f1"], 4), "AUC": round(m["metrics"]["auc"], 4)}
                   for nome, m in st.session_state.modelos.items()]
@@ -316,6 +327,12 @@ with abas[3]:
     st.markdown("SHAP mostra **quanto cada variavel empurrou** a previsao "
                 "para 'alto risco'. Requisito GAIE: **>=1 grafico global + >=1 individual**. "
                 "Aqui ha 3: summary (beeswarm), force plot e bar plot.")
+    st.info(
+        "ℹ️ O calculo SHAP pode demorar alguns segundos no primeiro acesso "
+        "(especialmente no Streamlit Cloud / Railway). Aguarde o indicador "
+        "**🟠 RUNNING** do canto superior direito desaparecer antes de mudar "
+        "o indice do foco ou trocar de aba."
+    )
 
     candidatos = {n: m for n, m in st.session_state.modelos.items()
                   if m["kind"] in ("rf", "xgb")}
