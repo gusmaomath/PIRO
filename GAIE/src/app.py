@@ -147,26 +147,36 @@ with abas[1]:
                 from xgboost import XGBClassifier
                 graf = st.empty(); barra = st.progress(0); status = st.empty()
                 hist = {"rounds": [], "acuracia": [], "f1": [], "auc": []}
-                passos = list(range(10, n_rounds + 1, 10))
+                incremento = 20   # rounds adicionados por passo (treino incremental)
+                acumulado = list(range(incremento, n_rounds + 1, incremento))
                 xgb_final = None
-                for k, n in enumerate(passos):
-                    xgb = XGBClassifier(n_estimators=n, max_depth=5, learning_rate=0.1,
-                                        eval_metric="logloss", random_state=RANDOM_STATE,
-                                        n_jobs=-1, tree_method="hist")
-                    xgb.fit(D["Xtr"], D["ytr"])
+                booster_so_far = None
+                status.write("Treinando XGBoost incrementalmente...")
+                for k, n in enumerate(acumulado):
+                    xgb = XGBClassifier(n_estimators=incremento, max_depth=5,
+                                        learning_rate=0.1, eval_metric="logloss",
+                                        random_state=RANDOM_STATE, n_jobs=-1,
+                                        tree_method="hist")
+                    # xgb_model permite continuar de onde parou: O(n) em vez de O(n^2)
+                    if booster_so_far is None:
+                        xgb.fit(D["Xtr"], D["ytr"])
+                    else:
+                        xgb.fit(D["Xtr"], D["ytr"], xgb_model=booster_so_far)
+                    booster_so_far = xgb.get_booster()
                     xgb_final = xgb
                     pred = xgb.predict(D["Xte"]); proba = xgb.predict_proba(D["Xte"])[:, 1]
                     hist["rounds"].append(n)
                     hist["acuracia"].append(accuracy_score(D["yte"], pred))
                     hist["f1"].append(f1_score(D["yte"], pred))
                     hist["auc"].append(roc_auc_score(D["yte"], proba))
-                    graf.line_chart(pd.DataFrame(
-                        {"acuracia": hist["acuracia"], "f1": hist["f1"], "auc": hist["auc"]},
-                        index=hist["rounds"]))
+                    if len(hist["rounds"]) >= 2:
+                        graf.line_chart(pd.DataFrame(
+                            {"acuracia": hist["acuracia"], "f1": hist["f1"],
+                             "auc": hist["auc"]},
+                            index=hist["rounds"]))
                     status.write(f"Rounds: **{n}** · acc=`{hist['acuracia'][-1]:.3f}` "
                                  f"· auc=`{hist['auc'][-1]:.3f}`")
-                    barra.progress((k + 1) / len(passos))
-                    time.sleep(0.03)
+                    barra.progress((k + 1) / len(acumulado))
                 st.session_state.modelos["XGBoost"] = {
                     "model": xgb_final, "kind": "xgb",
                     "metrics": {"acuracia": hist["acuracia"][-1], "f1": hist["f1"][-1],

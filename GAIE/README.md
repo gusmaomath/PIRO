@@ -441,7 +441,7 @@ A camada GAIE inclui uma aplicação web em **Streamlit** com cinco abas que cob
 
 ### Acesso
 
-- **URL pública (Railway):** _preencher após o deploy_
+- **URL pública (Railway):** https://piro-production-c4d4.up.railway.app
 - **Código:** [`./src/app.py`](./src/app.py)
 
 ### Imagens recomendadas para o pitch
@@ -542,8 +542,9 @@ Alternativa grátis: **Streamlit Community Cloud** apontando para `GAIE/src/app.
 ```
 GAIE/
 ├── README.md                          # Este arquivo
-├── nixpacks.toml                      # Builder Railway (necessário na raiz)
-├── railway.json                       # Start command Railway (necessário na raiz)
+├── requirements.txt                   # Detecção do Nixpacks (-r deploy/requirements.txt)
+├── runtime.txt                        # Versão Python para Nixpacks (python-3.12.7)
+├── railway.json                       # Start command Railway
 │
 ├── src/                               # Código-fonte Python
 │   ├── pipeline.py                    # Paths + engenharia + pré-processador + 3 modelos

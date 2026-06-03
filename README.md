@@ -128,7 +128,7 @@ Os dados fluem em um único sentido (sources → BDDI → Oracle → GAIE → a�
 | Pasta | Disciplina | Resumo da entrega |
 |-------|------------|-------------------|
 | [`BDDI/`](BDDI/) | **Big Data Architecture & Data Integration** | Pipeline Apache Airflow com 5 tarefas encadeadas, NASA FIRMS multi-dia + Open-Meteo em lote, MERGE idempotente no Oracle FIAP, 3 tabelas relacionadas e 6 consultas analíticas. **7.502 focos reais carregados.** |
-| [`GAIE/`](GAIE/) | **Generative AI For Engineering** | Pipeline de aprendizado de máquina com 3 modelos comparados (Random Forest, XGBoost, MLP), interpretabilidade SHAP com 3 gráficos (summary + waterfall + bar) e app Streamlit interativo com treino ao vivo modelo a modelo. |
+| [`GAIE/`](GAIE/) | **Generative AI For Engineering** | Pipeline de aprendizado de máquina com 3 modelos comparados (Random Forest, XGBoost, MLP), interpretabilidade SHAP com 3 gráficos (summary + waterfall + bar) e app Streamlit interativo com treino ao vivo modelo a modelo. **🌐 [App ao vivo](https://piro-production-c4d4.up.railway.app)** |
 
 Cada pasta tem seu próprio README com 15+ seções cobrindo problema, dataset, arquitetura, métricas, código, deploy e referências — formato padrão da equipe. As demais disciplinas (ACV, SDTCC, RPA, PBML, BISD) ficam com outros integrantes ou em repositórios separados.
 
