@@ -28,6 +28,7 @@ env/
 .DS_Store
 Thumbs.db
 desktop.ini
+.claude
 
 # ---- BDDI ----
 # Staging CSVs sao intermediarios da DAG, regenerados em cada execucao.
