@@ -243,6 +243,7 @@ A lógica de negócio é separada em módulos testáveis isoladamente em [`src/`
 | [`carga_oracle.py`](src/carga_oracle.py) | MERGE idempotente em focos + clima | ~125 |
 | [`database.py`](src/database.py) | Setup das tabelas e execução das 6 consultas | ~95 |
 | [`relatorio.py`](src/relatorio.py) | Sanity-check offline sem precisar do Oracle | ~55 |
+| [`exportar_para_gaie.py`](src/exportar_para_gaie.py) | **Integração com GAIE**: exporta JOIN focos+clima do Oracle, mapeia colunas e gera `../GAIE/data/focos_reais.csv` (~7.500 linhas, consumido pela app Streamlit) | ~140 |
 
 ### 5.1 Etapas da transformação
 
@@ -602,7 +603,9 @@ BDDI/
 │   ├── transformacao.py               # Limpeza + bbox UF/bioma + estação seca
 │   ├── carga_oracle.py                # MERGE idempotente em focos + clima
 │   ├── database.py                    # Setup das tabelas + execução das 6 consultas
-│   └── relatorio.py                   # Sanity-check offline (sem Oracle)
+│   ├── relatorio.py                   # Sanity-check offline (sem Oracle)
+│   ├── gera_relatorio.py              # Gera reports/RELATORIO_BDDI.pdf
+│   └── exportar_para_gaie.py          # Integração: exporta dados reais para GAIE
 │
 ├── sql/
 │   ├── 01_modelagem.sql               # 3 tabelas + FKs + 4 índices

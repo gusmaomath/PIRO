@@ -108,26 +108,39 @@ Diferentemente da camada ACV, o edital da GAIE **permite** o uso de dataset sint
 
 ## 3. Dataset
 
-### Origem
+### Origem — modo dual (preferência por dados reais)
 
-**Tipo:** Sintético gerado por algoritmo determinístico
-**Gerador:** [`src/gerar_dados.py`](src/gerar_dados.py)
-**Semente aleatória:** `42` (reprodutível bit-a-bit)
-**Equivalência de schema:** tabelas `focos_incendio` + `clima_associado` da camada BDDI
+O pipeline consome dados em modo **dual** com prioridade clara:
 
-### Distribuição do alvo
+| Prioridade | Fonte | Volume | Quando é usada |
+|---|---|---|---|
+| 1ª | **Snapshot do Oracle FIAP** (`data/focos_reais.csv`) | **~7.500 linhas reais** | Sempre que o CSV exportado pelo BDDI estiver no repositório (caso atual) |
+| 2ª | CSV sintético em `data/focos_incendio.csv` | até 10.000 linhas | Fallback se snapshot real não existir |
+| 3ª | Gerador em memória `gerar_dados.py` (seed=42) | 10.000 linhas | Último recurso quando nenhum CSV está disponível |
 
-| Classe | Linhas | Proporção |
-|--------|--------|-----------|
-| `alto_risco = 0` (baixo) | 1.584 | 52,8% |
-| `alto_risco = 1` (alto) | 1.416 | 47,2% |
-| **Total** | **3.000** | **100%** |
+A app Streamlit exibe **na aba "Sobre o problema"** qual fonte está ativa (`Oracle FIAP` ou `Sintético`). O snapshot real é gerado pelo script [`BDDI/src/exportar_para_gaie.py`](../BDDI/src/exportar_para_gaie.py) que:
 
-**Dataset balanceado por construção** — a regra geradora usa sigmoide centrada em 0,5, eliminando a necessidade de `class_weight` ou subsampling.
+1. Conecta ao Oracle FIAP populado pela DAG da camada BDDI
+2. Faz `JOIN focos_incendio × clima_associado`
+3. Mapeia as colunas para o schema esperado por este pipeline (renomeia `vento` → `velocidade_vento`, etc.)
+4. Deriva as 3 colunas que o BDDI não tem (`dias_sem_chuva`, `ndvi`, `declividade`) — `ndvi` é estimado por bioma com base em literatura de sensoriamento remoto
+5. Deriva o alvo `alto_risco` aplicando uma **regra física baseada apenas em features reais** da NASA FIRMS (FRP, brilho, confiança) + propriedades estáticas do bioma — evita dependência de features climáticas que ficaram imputadas devido a falha parcial do Open-Meteo (78% dos focos receberam mediana imputada para umidade/vento/precipitação)
+
+### Distribuição do alvo (modo real BDDI)
+
+A regra física foi calibrada para produzir distribuição balanceada apesar da realidade da NASA FIRMS:
+
+| Classe | Linhas (aprox.) | Proporção |
+|--------|-----------------|-----------|
+| `alto_risco = 0` (baixo) | ~3.900 | ~52% |
+| `alto_risco = 1` (alto) | ~3.600 | ~48% |
+| **Total real** | **~7.500** | **100%** |
+
+> **Modo sintético:** se o pipeline rodar sem `focos_reais.csv`, o `gerar_dados.py` produz 10.000 linhas balanceadas (52,8% / 47,2%) com a regra física completa (que pesa as 12 features).
 
 ### Características técnicas
 
-- **Volume:** 3.000 linhas (3× o mínimo do edital de 1.000)
+- **Volume:** ~7.500 (real) ou 10.000 (sintético) — ambos múltiplas vezes acima do mínimo do edital de 1.000
 - **Dimensionalidade:** 12 colunas de entrada + 1 alvo (2× o mínimo de 10)
 - **Tipos:** 10 numéricas contínuas, 2 categóricas (`bioma`, `estado`)
 - **Engenharia derivada:** 3 features adicionais (`indice_secura`, `estacao_seca`, `vento_forte`)
@@ -476,15 +489,36 @@ source .venv/Scripts/activate
 pip install -r deploy/requirements.txt
 ```
 
-### 11.3 Gerar dataset e treinar offline
+### 11.3 Obter dataset e treinar offline
+
+**Opção A — usar o snapshot real do BDDI (recomendado)**
+
+Esse caminho integra GAIE com BDDI: exporta os ~7.500 focos reais já carregados no Oracle FIAP, deriva o alvo `alto_risco` com regra física e salva em `data/focos_reais.csv`. Requer ambiente do BDDI configurado e conectividade com `oracle.fiap.com.br`:
 
 ```bash
-# Gera data/focos_incendio.csv com 3000 linhas (reproduzível com seed=42)
-python src/gerar_dados.py 3000
+cd ../BDDI
+source .venv/Scripts/activate
+python src/exportar_para_gaie.py     # gera GAIE/data/focos_reais.csv
+cd ../GAIE
+source .venv/Scripts/activate
+
+# Treina os 3 modelos sobre os dados reais
+python src/treino.py
+```
+
+**Opção B — usar o gerador sintético (fallback)**
+
+Se você não tem acesso ao Oracle ou quer reproduzir as métricas determinísticas do README:
+
+```bash
+# Gera data/focos_incendio.csv com 10.000 linhas (reproduzível com seed=42)
+python src/gerar_dados.py 10000
 
 # Treina os 3 modelos, gera 3 matrizes + 3 gráficos SHAP, salva o melhor em models/modelo.joblib
 python src/treino.py
 ```
+
+Em qualquer das duas opções, `treino.py` gera os mesmos artefatos: `models/*.joblib`, `reports/metricas.json` e os 6 PNGs em `reports/figures/`.
 
 Saída esperada:
 

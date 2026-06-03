@@ -18,8 +18,19 @@ source .venv/Scripts/activate
 # 3. Instale as dependencias
 pip install -r deploy/requirements.txt
 
-# 4. (opcional) gere o dataset — a app gera sozinha se faltar
-python src/gerar_dados.py
+# 4. (opcional) gere/obtenha o dataset
+#    A app cai em fallback automatico se nenhum CSV existir:
+#    1a opcao: data/focos_reais.csv (snapshot real do Oracle FIAP, exportado pelo BDDI)
+#    2a opcao: data/focos_incendio.csv (sintetico gerado por gerar_dados.py)
+#    3a opcao: gera 10000 linhas sinteticas em memoria
+
+# Para usar dados REAIS (recomendado, requer ambiente BDDI):
+cd ../BDDI && source .venv/Scripts/activate
+python src/exportar_para_gaie.py     # gera ../GAIE/data/focos_reais.csv
+cd ../GAIE && source .venv/Scripts/activate
+
+# OU para usar dados sinteticos:
+python src/gerar_dados.py 10000
 
 # 5. Abra a aplicacao
 streamlit run src/app.py
